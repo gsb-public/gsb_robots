@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function gsb_robots_menu() {
+  $items = array();
+  $items['robots.txt'] = array(
+    'title' => 'Robots',
+    'description' => 'GSB CMIS Content Type Import.',
+    'page callback' => 'gsb_robots_output',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/gsb/gsbrobots'] = array(
+    'title' => 'GSB Robots',
+    'description' => 'Manage the robots.txt file.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('gsb_robots_admin_settings'),
+    'access arguments' => array('administer gsb robots'),
+    'file' => 'gsb_robots.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function gsb_robots_permission() {
+  return array(
+    'administer gsb robots' => array(
+      'title' => t('Administer GSB Robots'),
+      'description' => t('Perform maintenance tasks for robots.txt.'),
+    ),
+  );
+}
+
+/**
+ * Output the robots.txt content.
+ */
+function gsb_robots_output() {
+
+  // Special for GSB. If the user didn't go through the proxy server then
+  // disallow all robots.
+  if (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])) {
+    $content = "
+    User-agent: *
+    Disallow: /
+    ";
+  }
+  else {
+    $content = variable_get('gsb_robots_content', '');
+  }
+
+  // Output the content
+  drupal_add_http_header('Content-type', 'text/plain');
+  print $content;
+  drupal_page_footer();
+}
