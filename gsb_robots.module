@@ -57,4 +57,6 @@ function gsb_robots_output() {
   // Output the content
   drupal_add_http_header('Content-type', 'text/plain');
   print $content;
+  drupal_page_footer();
+  drupal_exit();
 }
