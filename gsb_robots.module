@@ -44,15 +44,18 @@ function gsb_robots_output() {
 
   // Special for GSB. If the user didn't go through the proxy server then
   // disallow all robots.
-  if (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])) {
-    $content = "
-    User-agent: *
-    Disallow: /
-    ";
-  }
-  else {
+/**
+ * This is disabled due to caching issues.
+ */
+//  if (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])) {
+//    $content = "
+//    User-agent: *
+//    Disallow: /
+//    ";
+//  }
+//  else {
     $content = variable_get('gsb_robots_content', '');
-  }
+//  }
 
   // Output the content
   drupal_add_http_header('Content-type', 'text/plain');
